@@ -1,0 +1,18 @@
+# Syntax Coloring Map For ExampleLibrary
+
+# Datatypes (KEYWORD1)
+IOBase    KEYWORD1
+IOBLed    KEYWORD1
+IOBButton    KEYWORD1
+IOBTimer    KEYWORD1
+
+# Methods and Functions (KEYWORD2)
+loopAll KEYWORD2
+running KEYWORD2
+start KEYWORD2
+onTick KEYWORD2
+onChanged KEYWORD2
+
+# Instances (KEYWORD2)
+
+# Constants (LITERAL1)
