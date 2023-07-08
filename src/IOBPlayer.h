@@ -59,8 +59,8 @@ public:
 
 struct IOBPlayer : IOBase {
 private:
-  unsigned long previousMillis = 0;
-  unsigned long interval;
+  uint32_t previousMillis = 0;
+  uint32_t interval;
 
   IOBSequence* sequence;
   int buzzer_pin;
@@ -74,24 +74,24 @@ public:
   }
 
   bool isPlaying() {
-    return running;
+    return isRunning();
   }
 
-  void setMusic(IOBSequence* seq, bool start = true) {
+  void setMusic(IOBSequence* seq, bool startit = true) {
     stop();
     sequence = seq;
     sequence->reset();
-    if (start) {
-      running = true;
+    if (startit) {
+      start();
       playNote(millis());
     }
   }
 
-  void loop(unsigned long currentMillis) {
+  void loop(uint32_t currentMillis) {
     if (currentMillis - previousMillis >= interval) {
       previousMillis = currentMillis;
       if (!sequence->next(current_tone)) {
-        running = false;
+        stop();
       } else {
         playNote(currentMillis);
       }
@@ -100,17 +100,17 @@ public:
 
   void restart() {
     sequence->reset();
-    running = true;
+    start();
     playNote(millis());
   }
 
   void stop() {
-    running = false;
+    IOBase::stop();
     noTone(buzzer_pin);
   }
 
 private:
-  void playNote(unsigned long currentMillis) {
+  void playNote(uint32_t currentMillis) {
     previousMillis = currentMillis;
     if (sequence->next(current_tone)) {
       interval = 1000 / current_tone.time;

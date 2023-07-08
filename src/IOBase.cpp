@@ -1,10 +1,10 @@
 #include <Arduino.h>
-#include "IOBase.h"
+#include "IOB.h"
 
 IOBase* IOBase::root = NULL;
-static unsigned long IOBase::currentMillis = 0l;
+uint32_t IOBase::currentMillis = 0l;
 
-static void IOBase::loopAll() {
+void IOBase::loopAll() {
   currentMillis = millis();
 
   IOBase* current = root;
@@ -20,13 +20,4 @@ static void IOBase::loopAll() {
   }
 }
 
-bool IOBase::isRunning() {
-  return running ;
-}
-
-bool IOBase::setRunning(bool set) {
-  bool tmp = running;
-  running = set;
-  return tmp;
-}
 

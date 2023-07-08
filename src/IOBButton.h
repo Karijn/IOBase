@@ -9,11 +9,11 @@ enum ButtonState {
 };
 
 struct IOBButton;
-typedef void (*PFVIuL)(IOBButton&, ButtonState, int, unsigned long);
+typedef void (*PFVIuL)(IOBButton&, ButtonState, int, uint32_t);
 
 struct IOBButton : public IOBase {
 private:
-  unsigned long lastDebounceTime = 0;
+  uint32_t lastDebounceTime = 0;
   byte buttonPin;
   bool invertMode : 1;
   bool lastButtonState : 1;
@@ -21,7 +21,7 @@ private:
   bool falling : 1;
   bool buttonState : 1;
 protected:
-  unsigned long lastPressedTime;
+  uint32_t lastPressedTime;
   int ticks = 0;
   PFVIuL onChanged;
 
@@ -38,8 +38,8 @@ public:
   void onChangedCall(PFVIuL);
 
 protected:
-  virtual void loop(unsigned long currentMillis);
-  virtual void pressed(unsigned long currentMillis);
-  virtual void raise(unsigned long currentMillis);
-  virtual void fall(unsigned long currentMillis);
+  virtual void loop(uint32_t currentMillis);
+  virtual void pressed(uint32_t currentMillis);
+  virtual void raise(uint32_t currentMillis);
+  virtual void fall(uint32_t currentMillis);
 };

@@ -1,15 +1,16 @@
-#include "pins_arduino.h"
+//#include "pins_arduino.h"
 #include <Arduino.h>
-#include "IOBTimer.h"
+#include "IOB.h"
 
-IOBTimer::IOBTimer(long interval = 0, int initTicks = 0)
-  : IOBase() {
+
+IOBTimer::IOBTimer(uint32_t interval, PFTimer func, int maxTicks)
+  : IOBase(false) {
   this->interval = interval;
-  this->maxTicks = initTicks;
-  running = false;
+  this->maxTicks = maxTicks;
+  onTick = func;
 }
 
-void IOBTimer::loop(unsigned long currentMillis) {
+void IOBTimer::loop(uint32_t currentMillis) {
   if (currentMillis - previousMillis >= interval) {
     // save the last time you blinked the LED
     previousMillis = currentMillis;
@@ -17,22 +18,30 @@ void IOBTimer::loop(unsigned long currentMillis) {
     if (maxTicks > 0) {
       ticks--;
     }
+    else {
+      ticks++;
+    }
 
-    OnTick(ticks);
+    OnTick(ticks, currentMillis);
     if (onTick != nullptr) {
-      onTick(*this, ticks);
+      onTick(*this, ticks, currentMillis);
     }
 
     if (maxTicks > 0 && ticks <= 0) {
-      running = false;
+      stop();
     }
   }
 }
 
 void IOBTimer::start() {
   previousMillis = currentMillis;
-  ticks = maxTicks;
-  running = true;
+  if (maxTicks > 0) {
+    ticks = maxTicks;
+  }
+  else {
+    ticks = 0;
+  }
+  IOBase::start();
 }
 
 void IOBTimer::onTickCall(PFTimer func){

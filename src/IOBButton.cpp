@@ -1,12 +1,12 @@
 #include <Arduino.h>
-#include "IOBButton.h"
+#include "IOB.h"
 
-static uint16_t IOBButton::onPressDelaySlow = 250;
-static uint16_t IOBButton::debounceDelay = 50;
-static uint16_t IOBButton::onpressDelayFast = 100;
-static uint16_t IOBButton::onpressSlowCount = 5;
+uint16_t IOBButton::onPressDelaySlow = 250;
+uint16_t IOBButton::debounceDelay = 50;
+uint16_t IOBButton::onpressDelayFast = 100;
+uint16_t IOBButton::onpressSlowCount = 5;
 
-IOBButton::IOBButton(int pin, bool invert = false, int mode = INPUT)
+IOBButton::IOBButton(int pin, bool invert, int mode)
     : IOBase()
 {
     buttonPin = pin;
@@ -14,7 +14,7 @@ IOBButton::IOBButton(int pin, bool invert = false, int mode = INPUT)
     pinMode(buttonPin, mode);
 }
 
-void IOBButton::loop(unsigned long currentMillis)
+void IOBButton::loop(uint32_t currentMillis)
 {
     raising = false;
     falling = false;
@@ -66,7 +66,7 @@ void IOBButton::onChangedCall(PFVIuL func)
     onChanged = func;
 }
 
-void IOBButton::pressed(unsigned long currentMillis)
+void IOBButton::pressed(uint32_t currentMillis)
 {
     if ((currentMillis - lastPressedTime) > (ticks < onpressSlowCount ? onPressDelaySlow : onpressDelayFast))
     {
@@ -77,7 +77,7 @@ void IOBButton::pressed(unsigned long currentMillis)
     }
 }
 
-void IOBButton::raise(unsigned long currentMillis)
+void IOBButton::raise(uint32_t currentMillis)
 {
     lastPressedTime = currentMillis;
     ticks = 0;
@@ -87,7 +87,7 @@ void IOBButton::raise(unsigned long currentMillis)
     }
 }
 
-void IOBButton::fall(unsigned long currentMillis)
+void IOBButton::fall(uint32_t currentMillis)
 {
     if (onChanged)
         onChanged(*this, DB_Falling, ticks, currentMillis);

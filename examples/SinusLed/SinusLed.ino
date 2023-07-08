@@ -1,33 +1,20 @@
 #include "IOB.h"
 
-IOBFlasher l1(6);
+int ledPin = 6;
+int buttonPin = 4;
+
 IOBButton b1(4);
-IOBTimer t1(5000);
-IOBTimer t2(100, 3);
-IOBOneshot o(13, 1000);
+IOBLedFader fader(5, ledPin);
 
 void setup() {
-  // set the digital pin as output:
   Serial.begin(115200);
-  
+
+  // put your setup code here, to run once:
   b1.onChangedCall(buttonChanged);
-
-  l1.flash(1000, 50);
-  t1.onTickCall(onTick1);
-  t2.onTickCall(onTick2);
-  t1.start();
-  Serial.println("Startup...");
-
 }
 
 void loop() {
   IOBase::loopAll();
-
-  if(Serial.available()){
-    Serial.println("Oneshow stared");
-    Serial.read();
-    o.start();
-  }
 }
 
 void buttonChanged(IOBButton& b, ButtonState state, int ticks, uint32_t us) {
@@ -43,17 +30,7 @@ void buttonChanged(IOBButton& b, ButtonState state, int ticks, uint32_t us) {
   Serial.print(", ticks: ");
   Serial.println(ticks);
   if (state == DB_Falling) {
-    l1.isRunning() ? l1.stop() : l1.start();
-    t2.start();
+    Serial.println("Start blink");
+    fader.start();
   }
-}
-
-void onTick1(IOBTimer& timer, int ticks) {
-  Serial.print("On Tick1: ");
-  Serial.println(ticks);
-}
-
-void onTick2(IOBTimer& timer, int ticks) {
-  Serial.print("On Tick2: ");
-  Serial.println(ticks);
 }

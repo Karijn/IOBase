@@ -1,13 +1,13 @@
-#include "IOBase.h"
+#include "IOB.h"
 #include "IOBPitches.h"
 #include "IOBplayer.h"
 #include "tunes.h"
 #include "IOBProgmem.h"
 
 const int buzzer_pin = 5;
-const int button_pin = 6;
+const int button_pin = 4;
 
-IOBButton b1(6);
+IOBButton b1(button_pin);
 IOBPlayer player(buzzer_pin);
 
 IOBSequence melody_music1(IOBMUSIC(music1));
@@ -68,7 +68,7 @@ void loop() {
     player.restart();
   }
 
-  unsigned long currentMillis = millis();
+  uint32_t currentMillis = millis();
   IOBase::loopAll();
   //  player.loop(currentMillis);
 }

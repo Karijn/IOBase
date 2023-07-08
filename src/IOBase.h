@@ -8,31 +8,38 @@ struct IOBase {
 private:
   static IOBase* root;
   IOBase* Next;
+  bool running;
 
 protected:
-  bool running = true;
   bool wasRunning = true;
 
 protected:
-  IOBase() {
+  IOBase(bool run = true) {
     Next = root;
     root = this;
+    this->running = run;
   }
 
-  static unsigned long currentMillis;
+  static uint32_t currentMillis;
 
-  virtual void loop(unsigned long milliseconds) = 0;
+  virtual void loop(uint32_t milliseconds) = 0;
   virtual void ChangeRunning(){};
 
 public:
 
+  // loop all IOBase-derived objects
   static void loopAll();
-  bool isRunning();
-  bool setRunning(bool set);
 
+  // gets the running state of an IOBase object
+  bool isRunning() {
+    return running ;
+  }
+
+  virtual void stop() {
+    running = false;                  // We are not running now
+  }
+
+  virtual void start() {
+    running = true;                    // We are running now
+  }
 };
-
-
-#include "IOBButton.h"
-#include "IOBFlasher.h"
-#include "IOBTimer.h"

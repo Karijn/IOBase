@@ -7,7 +7,7 @@ private:
   uint8_t lampDriverPin;  // Holds pin-number of the lamp
   bool firstState;        // True when lamp should be on during first part of flash cycle
   bool cycleStart;        // ms clock at start of current cycle
-  bool inverted;          // inverted flag for leds to VCC
+  bool inverted;          // inverted flag for led to VCC
   uint16_t period;        // Cycle period in ms
   uint16_t firstPart;     // Time for first part of cycle in ms
 
@@ -15,26 +15,23 @@ public:
   // Creates a new Flasher
   // parameters:
   // pin, the pin 
-  IOBFlasher(
-    int pin,                      // Specifies the pin we use to drive the lamp
-    bool startSwitchedOn = false, // Specifies if the lamp starts on or off (default)
-    bool isInverted = false       // inverted flag for leds to VCC
-    )
-    : IOBase() {
+  IOBFlasher( int pin,                      // Specifies the pin we use to drive the lamp
+              bool startSwitchedOn = false, // Specifies if the lamp starts on or off (default)
+              bool isInverted = false       // inverted flag for led to VCC
+            ) : IOBase(false) {
     lampDriverPin = pin;                                        // Store the pin we are working on
     pinMode(pin, OUTPUT);                                       // Make it an output (to drive the MOSFET)
     digitalWrite(lampDriverPin, inverted ^ startSwitchedOn);  // Set the initial condition
-    running = false;                                           // Currently not running
   }
 
-  void switchOff() {
+  void stop() {
     digitalWrite(lampDriverPin, inverted);  // Switch lamp off
-    running = false;                  // We are not running now
+    IOBase::stop();                        // We are not running now
   }
 
-  void switchOn() {
+  void start() {
     digitalWrite(lampDriverPin, !inverted);  // Switch lamp on
-    running = false;                    // We are running now
+    IOBase::start();                        // We are not running now
   }
 
   void flash(
@@ -43,5 +40,5 @@ public:
     bool startOn = true         // Cycle starts with lamp on (default) or off
   );
 
-  void loop(unsigned long currentMillis);
+  void loop(uint32_t currentMillis);
 };
